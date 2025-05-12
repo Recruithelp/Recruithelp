@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency Converter</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    .converter-box {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    label {
+      font-weight: 600;
+      color: #34495e;
+    }
+    input, select {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .swap-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      color: #7f8c8d;
+      align-self: center;
+      padding: 0 10px;
+      margin: 0 5px;
+    }
+    .swap-btn:hover {
+      color: #3498db;
+    }
+    .error {
+      color: #e74c3c;
+      text-align: center;
+      margin-top: 15px;
+    }
+    .last-updated {
+      text-align: center;
+      font-size: 12px;
+      color: #95a5a6;
+      margin-top: 20px;
+    }
+    .currency-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .currency-select {
+      flex: 1;
+      min-width: 150px;
+    }
+    select {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Currency Converter</h1>
+    <div class="converter-box">
+      <div class="input-group">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" placeholder="Enter amount" min="0" step="0.01" value="1">
+      </div>
+      
+      <div class="currency-row">
+        <div class="input-group currency-select">
+          <label for="from-currency">From</label>
+          <select id="from-currency"></select>
+        </div>
+        
+        <button class="swap-btn" id="swap-btn" title="Swap currencies">⇄</button>
+        
+        <div class="input-group currency-select">
+          <label for="to-currency">To</label>
+          <select id="to-currency"></select>
+        </div>
+      </div>
+      
+      <button id="convert-btn">Convert</button>
+      
+      <div class="result" id="result">1 MYR = 17.85 INR</div>
+      <div class="error" id="error"></div>
+      <div class="last-updated" id="last-updated"></div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const amountInput = document.getElementById('amount');
+    const fromCurrencySelect = document.getElementById('from-currency');
+    const toCurrencySelect = document.getElementById('to-currency');
+    const convertBtn = document.getElementById('convert-btn');
+    const swapBtn = document.getElementById('swap-btn');
+    const resultDiv = document.getElementById('result');
+    const errorDiv = document.getElementById('error');
+    const lastUpdatedDiv = document.getElementById('last-updated');
+
+    // Free API from ExchangeRate-API
+    const API_KEY = 'c9d634747206ece807c17bbe'; // Replace with your API key
+    const API_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`;
+
+    // Most used currencies (shown first)
+    const mostUsedCurrencies = ['USD', 'EUR', 'INR', 'MYR', 'AED'];
+    
+    // Popular currencies to show next
+    const popularCurrencies = [
+      'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY', 'SGD'
+    ];
+
+    // All available currencies with country names
+    const allCurrencies = {
+      'AED': 'United Arab Emirates Dirham',
+      'AFN': 'Afghan Afghani',
+      'ALL': 'Albanian Lek',
+      'AMD': 'Armenian Dram',
+      'ANG': 'Netherlands Antillean Guilder',
+      'AOA': 'Angolan Kwanza',
+      'ARS': 'Argentine Peso',
+      'AUD': 'Australian Dollar',
+      'AWG': 'Aruban Florin',
+      'AZN': 'Azerbaijani Manat',
+      'BAM': 'Bosnia-Herzegovina Convertible Mark',
+      'BBD': 'Barbadian Dollar',
+      'BDT': 'Bangladeshi Taka',
+      'BGN': 'Bulgarian Lev',
+      'BHD': 'Bahraini Dinar',
+      'BIF': 'Burundian Franc',
+      'BMD': 'Bermudan Dollar',
+      'BND': 'Brunei Dollar',
+      'BOB': 'Bolivian Boliviano',
+      'BRL': 'Brazilian Real',
+      'BSD': 'Bahamian Dollar',
+      'BTN': 'Bhutanese Ngultrum',
+      'BWP': 'Botswanan Pula',
+      'BYN': 'Belarusian Ruble',
+      'BZD': 'Belize Dollar',
+      'CAD': 'Canadian Dollar',
+      'CDF': 'Congolese Franc',
+      'CHF': 'Swiss Franc',
+      'CLP': 'Chilean Peso',
+      'CNY': 'Chinese Yuan',
+      'COP': 'Colombian Peso',
+      'CRC': 'Costa Rican Colón',
+      'CUP': 'Cuban Peso',
+      'CVE': 'Cape Verdean Escudo',
+      'CZK': 'Czech Republic Koruna',
+      'DJF': 'Djiboutian Franc',
+      'DKK': 'Danish Krone',
+      'DOP': 'Dominican Peso',
+      'DZD': 'Algerian Dinar',
+      'EGP': 'Egyptian Pound',
+      'ERN': 'Eritrean Nakfa',
+      'ETB': 'Ethiopian Birr',
+      'EUR': 'Euro',
+      'FJD': 'Fijian Dollar',
+      'FKP': 'Falkland Islands Pound',
+      'FOK': 'Faroese Króna',
+      'GBP': 'British Pound Sterling',
+      'GEL': 'Georgian Lari',
+      'GGP': 'Guernsey Pound',
+      'GHS': 'Ghanaian Cedi',
+      'GIP': 'Gibraltar Pound',
+      'GMD': 'Gambian Dalasi',
+      'GNF': 'Guinean Franc',
+      'GTQ': 'Guatemalan Quetzal',
+      'GYD': 'Guyanaese Dollar',
+      'HKD': 'Hong Kong Dollar',
+      'HNL': 'Honduran Lempira',
+      'HRK': 'Croatian Kuna',
+      'HTG': 'Haitian Gourde',
+      'HUF': 'Hungarian Forint',
+      'IDR': 'Indonesian Rupiah',
+      'ILS': 'Israeli New Shekel',
+      'IMP': 'Manx pound',
+      'INR': 'Indian Rupee',
+      'IQD': 'Iraqi Dinar',
+      'IRR': 'Iranian Rial',
+      'ISK': 'Icelandic Króna',
+      'JEP': 'Jersey Pound',
+      'JMD': 'Jamaican Dollar',
+      'JOD': 'Jordanian Dinar',
+      'JPY': 'Japanese Yen',
+      'KES': 'Kenyan Shilling',
+      'KGS': 'Kyrgystani Som',
+      'KHR': 'Cambodian Riel',
+      'KID': 'Kiribati Dollar',
+      'KMF': 'Comorian Franc',
+      'KRW': 'South Korean Won',
+      'KWD': 'Kuwaiti Dinar',
+      'KYD': 'Cayman Islands Dollar',
+      'KZT': 'Kazakhstani Tenge',
+      'LAK': 'Laotian Kip',
+      'LBP': 'Lebanese Pound',
+      'LKR': 'Sri Lankan Rupee',
+      'LRD': 'Liberian Dollar',
+      'LSL': 'Lesotho Loti',
+      'LYD': 'Libyan Dinar',
+      'MAD': 'Moroccan Dirham',
+      'MDL': 'Moldovan Leu',
+      'MGA': 'Malagasy Ariary',
+      'MKD': 'Macedonian Denar',
+      'MMK': 'Myanma Kyat',
+      'MNT': 'Mongolian Tugrik',
+      'MOP': 'Macanese Pataca',
+      'MRU': 'Mauritanian Ouguiya',
+      'MUR': 'Mauritian Rupee',
+      'MVR': 'Maldivian Rufiyaa',
+      'MWK': 'Malawian Kwacha',
+      'MXN': 'Mexican Peso',
+      'MYR': 'Malaysian Ringgit',
+      'MZN': 'Mozambican Metical',
+      'NAD': 'Namibian Dollar',
+      'NGN': 'Nigerian Naira',
+      'NIO': 'Nicaraguan Córdoba',
+      'NOK': 'Norwegian Krone',
+      'NPR': 'Nepalese Rupee',
+      'NZD': 'New Zealand Dollar',
+      'OMR': 'Omani Rial',
+      'PAB': 'Panamanian Balboa',
+      'PEN': 'Peruvian Nuevo Sol',
+      'PGK': 'Papua New Guinean Kina',
+      'PHP': 'Philippine Peso',
+      'PKR': 'Pakistani Rupee',
+      'PLN': 'Polish Zloty',
+      'PYG': 'Paraguayan Guarani',
+      'QAR': 'Qatari Rial',
+      'RON': 'Romanian Leu',
+      'RSD': 'Serbian Dinar',
+      'RUB': 'Russian Ruble',
+      'RWF': 'Rwandan Franc',
+      'SAR': 'Saudi Riyal',
+      'SBD': 'Solomon Islands Dollar',
+      'SCR': 'Seychellois Rupee',
+      'SDG': 'Sudanese Pound',
+      'SEK': 'Swedish Krona',
+      'SGD': 'Singapore Dollar',
+      'SHP': 'Saint Helena Pound',
+      'SLE': 'Sierra Leonean Leone',
+      'SLL': 'Sierra Leonean Leone (old)',
+      'SOS': 'Somali Shilling',
+      'SRD': 'Surinamese Dollar',
+      'SSP': 'South Sudanese Pound',
+      'STN': 'São Tomé and Príncipe Dobra',
+      'SYP': 'Syrian Pound',
+      'SZL': 'Swazi Lilangeni',
+      'THB': 'Thai Baht',
+      'TJS': 'Tajikistani Somoni',
+      'TMT': 'Turkmenistani Manat',
+      'TND': 'Tunisian Dinar',
+      'TOP': 'Tongan Paʻanga',
+      'TRY': 'Turkish Lira',
+      'TTD': 'Trinidad and Tobago Dollar',
+      'TVD': 'Tuvaluan Dollar',
+      'TWD': 'New Taiwan Dollar',
+      'TZS': 'Tanzanian Shilling',
+      'UAH': 'Ukrainian Hryvnia',
+      'UGX': 'Ugandan Shilling',
+      'USD': 'United States Dollar',
+      'UYU': 'Uruguayan Peso',
+      'UZS': 'Uzbekistan Som',
+      'VES': 'Venezuelan Bolívar',
+      'VND': 'Vietnamese Dong',
+      'VUV': 'Vanuatu Vatu',
+      'WST': 'Samoan Tala',
+      'XAF': 'CFA Franc BEAC',
+      'XCD': 'East Caribbean Dollar',
+      'XDR': 'Special Drawing Rights',
+      'XOF': 'CFA Franc BCEAO',
+      'XPF': 'CFP Franc',
+      'YER': 'Yemeni Rial',
+      'ZAR': 'South African Rand',
+      'ZMW': 'Zambian Kwacha',
+      'ZWL': 'Zimbabwean Dollar'
+    };
+
+    // Exchange rates data
+    let exchangeRates = {};
+    let lastUpdated = '';
+
+    // Initialize the app
+    async function init() {
+      await fetchExchangeRates();
+      populateCurrencyDropdowns();
+      setDefaultCurrencies();
+      updateResult();
+    }
+
+    // Fetch exchange rates from API
+    async function fetchExchangeRates() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        if (data.result === 'success') {
+          exchangeRates = data.conversion_rates;
+          lastUpdated = new Date(data.time_last_update_utc).toLocaleString();
+          lastUpdatedDiv.textContent = `Last updated: ${lastUpdated}`;
+        } else {
+          throw new Error(data['error-type']);
+        }
+      } catch (error) {
+        errorDiv.textContent = `Error fetching exchange rates: ${error.message}`;
+        console.error('Error:', error);
+      }
+    }
+
+    // Populate currency dropdowns
+    function populateCurrencyDropdowns() {
+      // Add most used currencies first
+      mostUsedCurrencies.forEach(currency => {
+        addCurrencyOption(currency, fromCurrencySelect);
+        addCurrencyOption(currency, toCurrencySelect);
+      });
+
+      // Add separator
+      addSeparator(fromCurrencySelect);
+      addSeparator(toCurrencySelect);
+
+      // Add popular currencies next
+      popularCurrencies.forEach(currency => {
+        addCurrencyOption(currency, fromCurrencySelect);
+        addCurrencyOption(currency, toCurrencySelect);
+      });
+
+      // Add separator
+      addSeparator(fromCurrencySelect);
+      addSeparator(toCurrencySelect);
+
+      // Add all other currencies
+      Object.keys(allCurrencies)
+        .filter(currency => ![...mostUsedCurrencies, ...popularCurrencies].includes(currency))
+        .forEach(currency => {
+          addCurrencyOption(currency, fromCurrencySelect);
+          addCurrencyOption(currency, toCurrencySelect);
+        });
+    }
+
+    // Helper function to add currency option
+    function addCurrencyOption(currency, selectElement) {
+      const option = document.createElement('option');
+      option.value = currency;
+      option.textContent = `${currency} - ${allCurrencies[currency]}`;
+      selectElement.appendChild(option);
+    }
+
+    // Helper function to add separator
+    function addSeparator(selectElement) {
+      const separator = document.createElement('option');
+      separator.disabled = true;
+      separator.textContent = '───────────────────';
+      selectElement.appendChild(separator);
+    }
+
+    // Set default currencies
+    function setDefaultCurrencies() {
+      fromCurrencySelect.value = 'MYR';
+      toCurrencySelect.value = 'INR';
+    }
+
+    // Convert currency
+    function convertCurrency() {
+      errorDiv.textContent = '';
+      
+      const amount = parseFloat(amountInput.value);
+      if (isNaN(amount) || amount < 0) {
+        errorDiv.textContent = 'Please enter a valid amount';
+        return;
+      }
+
+      const fromCurrency = fromCurrencySelect.value;
+      const toCurrency = toCurrencySelect.value;
+
+      if (!fromCurrency || !toCurrency) {
+        errorDiv.textContent = 'Please select both currencies';
+        return;
+      }
+
+      // Convert via USD rates (since free API only gives USD-based rates)
+      const fromRate = exchangeRates[fromCurrency];
+      const toRate = exchangeRates[toCurrency];
+
+      if (!fromRate || !toRate) {
+        errorDiv.textContent = 'Exchange rate data not available for selected currencies';
+        return;
+      }
+
+      // Calculate converted amount
+      const amountInUSD = amount / fromRate;
+      const convertedAmount = amountInUSD * toRate;
+
+      updateResult(amount, fromCurrency, convertedAmount, toCurrency);
+    }
+
+    // Update result display
+    function updateResult(amount = 1, fromCurrency = 'MYR', convertedAmount = 17.85, toCurrency = 'INR') {
+      resultDiv.innerHTML = `
+        <strong>${amount.toFixed(2)} ${fromCurrency}</strong> = 
+        <strong style="color: #3498db">${convertedAmount.toFixed(2)} ${toCurrency}</strong>
+        <br><br>
+        1 ${fromCurrency} = ${(convertedAmount / amount).toFixed(6)} ${toCurrency}
+        <br>
+        1 ${toCurrency} = ${(amount / convertedAmount).toFixed(6)} ${fromCurrency}
+      `;
+    }
+
+    // Swap currencies
+    function swapCurrencies() {
+      const temp = fromCurrencySelect.value;
+      fromCurrencySelect.value = toCurrencySelect.value;
+      toCurrencySelect.value = temp;
+      convertCurrency();
+    }
+
+    // Event listeners
+    convertBtn.addEventListener('click', convertCurrency);
+    swapBtn.addEventListener('click', swapCurrencies);
+    amountInput.addEventListener('input', convertCurrency);
+    fromCurrencySelect.addEventListener('change', convertCurrency);
+    toCurrencySelect.addEventListener('change', convertCurrency);
+
+    // Initialize the app
+    init();
+  </script>
+</body>
+</html>
