@@ -1,91 +1,327 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Salary Hike Calculator</title>
+  <title>Salary Hike Calculator - Recruit Help</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary-blue: #2563eb;
+      --dark-blue: #1e40af;
+      --light-blue: #93c5fd;
+      --background: #f8fafc;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --mobile-breakpoint: 768px;
+    }
+    
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
+    
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f4f4f9;
-      color: #333;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      background-color: var(--background);
+      line-height: 1.6;
     }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+    /* Layout Grid */
+    .app-container {
+      display: grid;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
     }
-    h1 {
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .app-container {
+        grid-template-areas:
+          "header"
+          "main";
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Header Styles */
+    header {
+      grid-area: header;
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 15px 20px;
+    }
+    
+    .logo-nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-blue);
+    }
+    
+    /* Banner Ad */
+    .banner-ad {
+      background-color: #e0e7ff;
+      padding: 10px;
       text-align: center;
-      margin-bottom: 20px;
-      color: #2c3e50;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-light);
+      border-radius: 6px;
     }
+    
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      background-color: var(--white);
+      border-right: 1px solid var(--border-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .sidebar {
+        display: none;
+      }
+    }
+    
+    .square-ad {
+      background-color: #e0e7ff;
+      width: 210px;
+      height: 210px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    
+    /* Main Content */
+    main {
+      grid-area: main;
+      padding: 30px;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .calculator-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      color: var(--primary-blue);
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    
+    /* Form Styles */
     .form-group {
       margin-bottom: 20px;
     }
+    
     label {
       display: block;
       margin-bottom: 8px;
-      font-weight: bold;
-      color: #555;
+      font-weight: 500;
+      color: var(--text-dark);
     }
+    
     input {
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ddd;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
       border-radius: 6px;
-      transition: border-color 0.3s ease;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
+    
     input:focus {
       outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
+    
     .result-note {
       margin-top: 20px;
-      padding: 15px;
-      background-color: #f8f9fa;
-      border-radius: 6px;
-      border-left: 4px solid #007bff;
+      padding: 20px;
+      background-color: #f0f9ff;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-blue);
     }
+    
+    .result-note p {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-dark);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .mobile-nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+        padding-top: 15px;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      main {
+        padding: 20px;
+      }
+      
+      .calculator-card {
+        padding: 20px;
+      }
+    }
+
+
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Salary Hike Calculator</h1>
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <div class="logo-nav-container">
+          <a href="#" class="logo">Recruit Help</a>
+          <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="fas fa-bars"></i></button>
+          <nav class="nav-links" id="navLinks">
+            <a href="#">Home</a>
+            <a href="#">Tools</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+        <div class="banner-ad">
+          Advertisement Space - 728x90
+        </div>
+      </div>
+    </header>
     
-    <div class="form-group">
-      <label for="current">Current Annual Salary (₹):</label>
-      <input type="text" id="current" placeholder="Enter current salary" data-type="currency">
-    </div>
+    <aside class="sidebar">
+      <div class="square-ad">Square Ad (250x250)</div>
+      <div class="square-ad">Square Ad (250x250)</div>
+    </aside>
+    
+    <main>
+      <div class="calculator-card">
+        <h1><i class="fas fa-calculator" style="margin-right: 10px;"></i>Salary Hike Calculator</h1>
+        
+        
+        <div class="form-group">
+          <label for="current">Current Annual/Monthly Salary:</label>
+          <input type="text" id="current" placeholder="Enter current salary" data-type="currency">
+        </div>
 
-    <div class="form-group">
-      <label for="expected">Expected Annual Salary (₹):</label>
-      <input type="text" id="expected" placeholder="Enter expected salary" data-type="currency">
-    </div>
+        <div class="form-group">
+          <label for="expected">Expected Annual/Monthly Salary:</label>
+          <input type="text" id="expected" placeholder="Enter expected salary" data-type="currency">
+        </div>
 
-    <div class="form-group">
-      <label for="hike">Hike Percentage (%):</label>
-      <input type="text" id="hike" placeholder="Enter hike percentage">
-    </div>
+        <div class="form-group">
+          <label for="hike">Hike Percentage (%):</label>
+          <input type="text" id="hike" placeholder="Enter hike percentage">
+        </div>
 
-    <div class="result-note">
-      <p>💡 Change any field to automatically calculate the others</p>
-      <p>📈 Calculations update in real-time as you type</p>
-    </div>
+        <div class="result-note">
+          <p><i class="fas fa-lightbulb"></i> Change any field to automatically calculate the others</p>
+          <p><i class="fas fa-sync-alt"></i> Calculations update in real-time as you type</p>
+        </div>
+      </div>
+    </main>
   </div>
 
   <script>
     let isUpdating = false;
+    let salaryType = 'annual'; // Default to annual
+
+    // Mobile navigation toggle
+    document.getElementById('mobileNavToggle').addEventListener('click', function() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('active');
+    });
+
+    // Salary type toggle
+    document.querySelectorAll('input[name="salaryType"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        salaryType = this.value;
+        // Recalculate when type changes
+        if (document.getElementById('current').value || 
+            document.getElementById('expected').value || 
+            document.getElementById('hike').value) {
+          calculateValues('current');
+        }
+      });
+    });
 
     // Number formatting functions
     function formatNumber(num) {
@@ -131,9 +367,15 @@
       if (isUpdating) return;
       isUpdating = true;
 
-      const current = parseFormattedNumber(document.getElementById('current').value);
-      const expected = parseFormattedNumber(document.getElementById('expected').value);
-      const hike = parseFormattedNumber(document.getElementById('hike').value);
+      let current = parseFormattedNumber(document.getElementById('current').value);
+      let expected = parseFormattedNumber(document.getElementById('expected').value);
+      let hike = parseFormattedNumber(document.getElementById('hike').value);
+
+      // Convert to annual if monthly is selected for calculations
+      if (salaryType === 'monthly') {
+        current = current * 12;
+        expected = expected * 12;
+      }
 
       try {
         switch(source) {
@@ -144,7 +386,7 @@
                 document.getElementById('hike').value = formatNumber(newHike);
               } else if (hike > 0) {
                 const newExpected = current * (1 + hike / 100);
-                document.getElementById('expected').value = formatNumber(newExpected);
+                document.getElementById('expected').value = formatNumber(salaryType === 'monthly' ? newExpected / 12 : newExpected);
               }
             }
             break;
@@ -156,7 +398,7 @@
                 document.getElementById('hike').value = formatNumber(newHike);
               } else if (hike > 0) {
                 const newCurrent = expected / (1 + hike / 100);
-                document.getElementById('current').value = formatNumber(newCurrent);
+                document.getElementById('current').value = formatNumber(salaryType === 'monthly' ? newCurrent / 12 : newCurrent);
               }
             }
             break;
@@ -165,10 +407,10 @@
             if (hike > 0) {
               if (current > 0) {
                 const newExpected = current * (1 + hike / 100);
-                document.getElementById('expected').value = formatNumber(newExpected);
+                document.getElementById('expected').value = formatNumber(salaryType === 'monthly' ? newExpected / 12 : newExpected);
               } else if (expected > 0) {
                 const newCurrent = expected / (1 + hike / 100);
-                document.getElementById('current').value = formatNumber(newCurrent);
+                document.getElementById('current').value = formatNumber(salaryType === 'monthly' ? newCurrent / 12 : newCurrent);
               }
             }
             break;
@@ -182,6 +424,9 @@
     document.getElementById('current').addEventListener('input', handleNumberInput);
     document.getElementById('expected').addEventListener('input', handleNumberInput);
     document.getElementById('hike').addEventListener('input', handleNumberInput);
+
+    // Initialize mobile nav
+    document.getElementById('navLinks').classList.remove('active');
   </script>
 </body>
 </html>
