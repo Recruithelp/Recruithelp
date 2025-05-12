@@ -3,132 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recruiter Toolkit Dashboard</title>
+  <title>Recruit Help - Recruiter Toolkit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary-blue: #2563eb;
+      --dark-blue: #1e40af;
+      --light-blue: #93c5fd;
+      --background: #f8fafc;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --mobile-breakpoint: 768px;
+    }
+    
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
+    
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f4f4f9;
-      color: #333;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      background-color: var(--background);
+      line-height: 1.6;
     }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+    /* Layout Grid */
+    .app-container {
+      display: grid;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
     }
-    h1 {
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .app-container {
+        grid-template-areas:
+          "header"
+          "main";
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Header Styles */
+    header {
+      grid-area: header;
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 15px 20px;
+    }
+    
+    .logo-nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-blue);
+    }
+    
+    /* Banner Ad */
+    .banner-ad {
+      background-color: #e0e7ff;
+      padding: 10px;
       text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-light);
+      border-radius: 6px;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      background-color: var(--white);
+      border-right: 1px solid var(--border-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .sidebar {
+        display: none;
+      }
+    }
+    
+    .square-ad {
+      background-color: #e0e7ff;
+      width: 210px; /* Accounting for padding */
+      height: 210px; /* Perfect square */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    
+    /* Main Content */
+    main {
+      grid-area: main;
+      padding: 30px;
+      width: 100%;
+      max-width: 900px; /* Adjusted to accommodate sidebar */
+      margin: 0 auto;
+    }
+    
+    .dashboard-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      color: var(--primary-blue);
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    /* Form Styles */
+    .form-group {
       margin-bottom: 20px;
     }
-    label, select, input, button {
+    
+    label {
       display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+    
+    select, input {
       width: 100%;
-      margin-bottom: 15px;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
-    input, select, button {
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
+    
     button {
-      background-color: #007bff;
-      color: #fff;
+      background-color: var(--primary-blue);
+      color: white;
       border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
       transition: background-color 0.3s;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
     }
+    
     button:hover {
-      background-color: #0056b3;
+      background-color: var(--dark-blue);
     }
-    .output {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #e9ecef;
-      border-radius: 4px;
-      word-wrap: break-word;
-    }
-    select {
-      background-color: white;
-    }
+    
+    /* Keyword Section */
     .keyword-section {
-      margin-bottom: 15px;
-      padding: 10px;
-      background-color: #f8f9fa;
-      border-radius: 4px;
+      background-color: #f0f9ff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--primary-blue);
     }
+    
     .keyword-section h3 {
-      margin-top: 0;
-      color: #495057;
+      color: var(--primary-blue);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    
+    /* Output Section */
+    .output {
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      border-left: 4px solid var(--primary-blue);
+    }
+    
+    .output a {
+      color: var(--primary-blue);
+      word-break: break-all;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .output a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-dark);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .mobile-nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+        padding-top: 15px;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+    }
+
+    /* Animation for output */
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Recruiter Toolkit Dashboard</h1>
-
-    <label for="site">Select Platform:</label>
-    <select id="site" onchange="toggleCountryField()">
-      <option value="linkedin">LinkedIn</option>
-      <option value="github">GitHub</option>
-      <option value="stackoverflow">Stack Overflow</option>
-      <option value="google">Google Search</option>
-    </select>
-
-    <div id="countryContainer">
-      <label for="country">Select Country:</label>
-      <select id="country">
-        <option value="India">India</option>
-        <option value="Malaysia">Malaysia</option>
-        <option value="Singapore">Singapore</option>
-        <option value="United Kingdom">United Kingdom</option>
-        <option value="United States">United States</option>
-        <option value="Australia">Australia</option>
-        <option disabled>───────────────────</option>
-        <option value="Argentina">Argentina</option>
-        <option value="Brazil">Brazil</option>
-        <option value="Canada">Canada</option>
-        <option value="China">China</option>
-        <option value="Egypt">Egypt</option>
-        <option value="France">France</option>
-        <option value="Germany">Germany</option>
-        <option value="Indonesia">Indonesia</option>
-        <option value="Japan">Japan</option>
-        <option value="Kenya">Kenya</option>
-        <option value="Mexico">Mexico</option>
-        <option value="Nigeria">Nigeria</option>
-        <option value="Russia">Russia</option>
-        <option value="South Africa">South Africa</option>
-        <option value="Spain">Spain</option>
-        <option value="UAE">UAE</option>
-      </select>
-    </div>
-
-    <div class="keyword-section">
-      <h3>Keyword Search Options</h3>
-      
-      <label for="allKeywords">All of these words (AND search):</label>
-      <input type="text" id="allKeywords" placeholder="Enter required keywords separated by spaces">
-      
-      <label for="anyKeywords">Any of these words (OR search):</label>
-      <input type="text" id="anyKeywords" placeholder="Enter optional keywords separated by spaces">
-      
-      <label for="excludeKeywords">None of these words (NOT search):</label>
-      <input type="text" id="excludeKeywords" placeholder="Enter excluded keywords separated by spaces">
-    </div>
-
-    <button onclick="generateSearch()">Generate Search URL</button>
-
-    <div id="searchOutput" class="output"></div>
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <div class="logo-nav-container">
+          <a href="#" class="logo">Recruit Help</a>
+          <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="fas fa-bars"></i></button>
+          <nav class="nav-links" id="navLinks">
+            <a href="#">Home</a>
+            <a href="#">Tools</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+        <div class="banner-ad">
+          Advertisement Space - 728x90
+        </div>
+      </div>
+    </header>
+    
+    <aside class="sidebar">
+      <div class="square-ad">Square Ad (250x250)</div>
+      <div class="square-ad">Square Ad (250x250)</div>
+    </aside>
+    
+    <main>
+      <div class="dashboard-card">
+        <h1><i class="fas fa-search" style="margin-right: 10px;"></i>Recruiter Search Toolkit</h1>
+        
+        <div class="form-group">
+          <label for="site">Select Platform:</label>
+          <select id="site" onchange="toggleCountryField()">
+            <option value="linkedin">LinkedIn</option>
+            <option value="github">GitHub</option>
+            <option value="stackoverflow">Stack Overflow</option>
+            <option value="google">Google Search</option>
+          </select>
+        </div>
+        
+        <div class="form-group" id="countryContainer">
+          <label for="country">Select Country:</label>
+          <select id="country">
+            <option value="India">India</option>
+            <option value="Malaysia">Malaysia</option>
+            <option value="Singapore">Singapore</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="United States">United States</option>
+            <option value="Australia">Australia</option>
+            <option disabled>───────────────────</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Canada">Canada</option>
+            <option value="China">China</option>
+            <option value="Egypt">Egypt</option>
+            <option value="France">France</option>
+            <option value="Germany">Germany</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Japan">Japan</option>
+            <option value="Kenya">Kenya</option>
+            <option value="Mexico">Mexico</option>
+            <option value="Nigeria">Nigeria</option>
+            <option value="Russia">Russia</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Spain">Spain</option>
+            <option value="UAE">UAE</option>
+          </select>
+        </div>
+        
+        <div class="keyword-section">
+          <h3><i class="fas fa-key" style="margin-right: 8px;"></i>Keyword Search Options</h3>
+          
+          <div class="form-group">
+            <label for="allKeywords">All of these words (AND search):</label>
+            <input type="text" id="allKeywords" placeholder="Enter required keywords separated by spaces">
+          </div>
+          
+          <div class="form-group">
+            <label for="anyKeywords">Any of these words (OR search):</label>
+            <input type="text" id="anyKeywords" placeholder="Enter optional keywords separated by spaces">
+          </div>
+          
+          <div class="form-group">
+            <label for="excludeKeywords">None of these words (NOT search):</label>
+            <input type="text" id="excludeKeywords" placeholder="Enter excluded keywords separated by spaces">
+          </div>
+        </div>
+        
+        <button onclick="generateSearch()"><i class="fas fa-magic" style="margin-right: 8px;"></i>Generate Search URL</button>
+        
+        <div id="searchOutput" class="output" style="display: none;"></div>
+      </div>
+    </main>
   </div>
 
   <script>
+    // Mobile navigation toggle
+    document.getElementById('mobileNavToggle').addEventListener('click', function() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('active');
+    });
+
     function toggleCountryField() {
       const site = document.getElementById("site").value;
       const countryContainer = document.getElementById("countryContainer");
@@ -221,13 +477,22 @@
       
       const searchURL = `https://www.google.com/search?q=${encodeURIComponent(finalQuery)}`;
 
-      document.getElementById("searchOutput").innerHTML = 
-        `<strong>Search URL:</strong><br><a href="${searchURL}" target="_blank">${searchURL}</a><br><br>
-         <strong>Boolean Query:</strong><br>${finalQuery}`;
+      const outputDiv = document.getElementById("searchOutput");
+      outputDiv.innerHTML = 
+        `<strong><i class="fas fa-link"></i> Search URL:</strong><br><a href="${searchURL}" target="_blank">${searchURL}</a><br><br>
+         <strong><i class="fas fa-code"></i> Boolean Query:</strong><br>${finalQuery}`;
+      outputDiv.style.display = "block";
+      outputDiv.classList.add('fade-in');
+      
+      // Smooth scroll to results
+      outputDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
     // Initialize correct view on page load
-    window.onload = toggleCountryField;
+    window.onload = function() {
+      toggleCountryField();
+      document.getElementById('navLinks').classList.remove('active');
+    };
   </script>
 </body>
 </html>
