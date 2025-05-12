@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Time Zone Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 30px;
+      background: #ffffff;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #0b4c8c;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+      justify-content: center;
+    }
+
+    .controls input,
+    .controls select,
+    .controls button {
+      padding: 10px 12px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .controls button {
+      background-color: #0b4c8c;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .timezone-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e6f4ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #cce7ff;
+    }
+
+    .timezone-entry label {
+      font-weight: bold;
+      font-size: 17px;
+      color: #084d73;
+      flex-grow: 1;
+    }
+
+    .timezone-entry select {
+      font-weight: bold;
+      font-size: 17px;
+      padding: 8px 10px;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+      background-color: #fff;
+      color: #222;
+      margin: 0 10px;
+    }
+
+    .remove-btn {
+      background-color: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .remove-btn:hover {
+      background-color: #cc0000;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Time Zone Converter</h1>
+    <div class="controls">
+      <input type="text" id="timezone-input" placeholder="Enter or select Time Zone" list="timezone-list" />
+      <datalist id="timezone-list"></datalist>
+      <button id="add-btn">Add Time Zone</button>
+    </div>
+    <div id="timezones-container"></div>
+  </div>
+
+  <script>
+    const { DateTime } = luxon;
+
+    const timezonesContainer = document.getElementById("timezones-container");
+    const timezoneInput = document.getElementById("timezone-input");
+    const timezoneList = document.getElementById("timezone-list");
+    const addBtn = document.getElementById("add-btn");
+
+    // Comprehensive list of all countries and their major cities with timezones
+    const timeZonesWithCities = {
+      // North America
+      "America/New_York": "USA (New York, Washington D.C., Miami, Boston)",
+      "America/Chicago": "USA (Chicago, Houston, Dallas, New Orleans)",
+      "America/Denver": "USA (Denver, Phoenix, Salt Lake City)",
+      "America/Los_Angeles": "USA (Los Angeles, San Francisco, Seattle)",
+      "America/Anchorage": "USA (Anchorage, Fairbanks)",
+      "America/Honolulu": "USA (Honolulu)",
+      "America/Toronto": "Canada (Toronto, Montreal, Ottawa)",
+      "America/Vancouver": "Canada (Vancouver, Victoria)",
+      "America/Edmonton": "Canada (Edmonton, Calgary)",
+      "America/Winnipeg": "Canada (Winnipeg)",
+      "America/Halifax": "Canada (Halifax)",
+      "America/St_Johns": "Canada (St. John's)",
+      "America/Mexico_City": "Mexico (Mexico City, Guadalajara)",
+      "America/Tijuana": "Mexico (Tijuana)",
+      "America/Cancun": "Mexico (Cancun)",
+      
+      // Central/South America
+      "America/Panama": "Panama (Panama City), Cuba (Havana)",
+      "America/Bogota": "Colombia (Bogota)",
+      "America/Lima": "Peru (Lima), Ecuador (Quito)",
+      "America/Caracas": "Venezuela (Caracas)",
+      "America/Santiago": "Chile (Santiago)",
+      "America/Argentina/Buenos_Aires": "Argentina (Buenos Aires)",
+      "America/Sao_Paulo": "Brazil (Sao Paulo, Rio de Janeiro)",
+      "America/La_Paz": "Bolivia (La Paz)",
+      "America/Asuncion": "Paraguay (Asuncion)",
+      "America/Montevideo": "Uruguay (Montevideo)",
+      "America/Costa_Rica": "Costa Rica (San Jose)",
+      "America/Guatemala": "Guatemala (Guatemala City)",
+      
+      // Europe
+      "Europe/London": "UK (London), Ireland (Dublin), Portugal (Lisbon)",
+      "Europe/Paris": "France (Paris), Germany (Berlin), Italy (Rome), Spain (Madrid)",
+      "Europe/Athens": "Greece (Athens), Finland (Helsinki), Turkey (Istanbul)",
+      "Europe/Moscow": "Russia (Moscow, St. Petersburg)",
+      "Europe/Kiev": "Ukraine (Kyiv)",
+      "Europe/Warsaw": "Poland (Warsaw)",
+      "Europe/Prague": "Czech Republic (Prague)",
+      "Europe/Budapest": "Hungary (Budapest)",
+      "Europe/Vienna": "Austria (Vienna)",
+      "Europe/Zurich": "Switzerland (Zurich)",
+      "Europe/Stockholm": "Sweden (Stockholm)",
+      "Europe/Oslo": "Norway (Oslo)",
+      "Europe/Copenhagen": "Denmark (Copenhagen)",
+      "Europe/Rome": "Italy (Rome)",
+      "Europe/Brussels": "Belgium (Brussels)",
+      "Europe/Amsterdam": "Netherlands (Amsterdam)",
+      
+      // Africa
+      "Africa/Cairo": "Egypt (Cairo, Alexandria)",
+      "Africa/Johannesburg": "South Africa (Johannesburg, Cape Town)",
+      "Africa/Nairobi": "Kenya (Nairobi), Ethiopia (Addis Ababa)",
+      "Africa/Lagos": "Nigeria (Lagos), DR Congo (Kinshasa)",
+      "Africa/Casablanca": "Morocco (Casablanca)",
+      "Africa/Tunis": "Tunisia (Tunis)",
+      "Africa/Algiers": "Algeria (Algiers)",
+      "Africa/Dakar": "Senegal (Dakar)",
+      "Africa/Accra": "Ghana (Accra)",
+      "Africa/Dar_es_Salaam": "Tanzania (Dar es Salaam)",
+      
+      // Middle East
+      "Asia/Dubai": "UAE (Dubai, Abu Dhabi), Oman (Muscat)",
+      "Asia/Riyadh": "Saudi Arabia (Riyadh, Jeddah)",
+      "Asia/Tehran": "Iran (Tehran)",
+      "Asia/Baghdad": "Iraq (Baghdad), Kuwait (Kuwait City), Qatar (Doha)",
+      "Asia/Amman": "Jordan (Amman)",
+      "Asia/Beirut": "Lebanon (Beirut)",
+      "Asia/Jerusalem": "Israel (Jerusalem, Tel Aviv)",
+      
+      // South Asia
+      "Asia/Karachi": "Pakistan (Karachi, Islamabad, Lahore)",
+      "Asia/Dhaka": "Bangladesh (Dhaka)",
+      "Asia/Kolkata": "India (Delhi, Mumbai, Kolkata, Bangalore)",
+      "Asia/Kathmandu": "Nepal (Kathmandu)",
+      "Asia/Colombo": "Sri Lanka (Colombo)",
+      "Asia/Thimphu": "Bhutan (Thimphu)",
+      "Asia/Male": "Maldives (Male)",
+      
+      // Southeast Asia
+      "Asia/Yangon": "Myanmar (Yangon)",
+      "Asia/Bangkok": "Thailand (Bangkok), Vietnam (Hanoi), Cambodia (Phnom Penh)",
+      "Asia/Singapore": "Singapore, Malaysia (Kuala Lumpur)",
+      "Asia/Manila": "Philippines (Manila)",
+      "Asia/Jakarta": "Indonesia (Jakarta, Bali)",
+      "Asia/Ho_Chi_Minh": "Vietnam (Ho Chi Minh City)",
+      
+      // East Asia
+      "Asia/Shanghai": "China (Beijing, Shanghai, Hong Kong)",
+      "Asia/Tokyo": "Japan (Tokyo, Osaka)",
+      "Asia/Seoul": "South Korea (Seoul)",
+      "Asia/Taipei": "Taiwan (Taipei)",
+      "Asia/Ulaanbaatar": "Mongolia (Ulaanbaatar)",
+      "Asia/Pyongyang": "North Korea (Pyongyang)",
+      
+      // Australia/Pacific
+      "Australia/Sydney": "Australia (Sydney, Melbourne)",
+      "Australia/Brisbane": "Australia (Brisbane)",
+      "Australia/Adelaide": "Australia (Adelaide)",
+      "Australia/Darwin": "Australia (Darwin)",
+      "Australia/Perth": "Australia (Perth)",
+      "Pacific/Auckland": "New Zealand (Auckland, Wellington)",
+      "Pacific/Fiji": "Fiji (Suva)",
+      "Pacific/Guam": "Guam (Hagatna)",
+      "Pacific/Port_Moresby": "Papua New Guinea (Port Moresby)",
+      
+      // Russian Time Zones
+      "Asia/Yekaterinburg": "Russia (Yekaterinburg)",
+      "Asia/Omsk": "Russia (Omsk)",
+      "Asia/Krasnoyarsk": "Russia (Krasnoyarsk)",
+      "Asia/Irkutsk": "Russia (Irkutsk)",
+      "Asia/Yakutsk": "Russia (Yakutsk)",
+      "Asia/Vladivostok": "Russia (Vladivostok)",
+      "Asia/Magadan": "Russia (Magadan)",
+      "Asia/Kamchatka": "Russia (Petropavlovsk-Kamchatsky)"
+    };
+
+    // Create the datalist options
+    Object.keys(timeZonesWithCities).forEach(zone => {
+      const opt = document.createElement("option");
+      opt.value = `${zone} (${timeZonesWithCities[zone]})`;
+      timezoneList.appendChild(opt);
+    });
+
+    const selectedZones = [];
+
+    function generateTimeOptions() {
+      const options = [];
+      for (let h = 0; h < 24; h++) {
+        for (let m of [0, 30]) {
+          const hour = h.toString().padStart(2, '0');
+          const min = m.toString().padStart(2, '0');
+          const dt = DateTime.fromObject({ hour: h, minute: m });
+          options.push({ value: `${hour}:${min}`, label: dt.toFormat("hh:mm a") });
+        }
+      }
+      return options;
+    }
+
+    const timeOptions = generateTimeOptions();
+
+    function renderZones(baseZone = null, baseTime = null) {
+      timezonesContainer.innerHTML = "";
+      selectedZones.forEach((zone, index) => {
+        const container = document.createElement("div");
+        container.className = "timezone-entry";
+
+        const label = document.createElement("label");
+        label.textContent = zone;
+
+        const timeSelect = document.createElement("select");
+        timeOptions.forEach(opt => {
+          const option = document.createElement("option");
+          option.value = opt.value;
+          option.textContent = opt.label;
+          timeSelect.appendChild(option);
+        });
+
+        // Extract the timezone ID from the display string
+        const zoneId = zone.split(' (')[0];
+        let currentTime = DateTime.now().setZone(zoneId);
+        let rounded = currentTime.minute < 30 ? 0 : 30;
+        let defaultTime = `${currentTime.hour.toString().padStart(2, '0')}:${rounded.toString().padStart(2, '0')}`;
+        
+        if (baseZone && baseTime) {
+          const [h, m] = baseTime.split(":").map(Number);
+          const baseZoneId = baseZone.split(' (')[0];
+          const converted = DateTime.now()
+            .setZone(baseZoneId)
+            .set({ hour: h, minute: m })
+            .toUTC()
+            .setZone(zoneId);
+          const hh = converted.hour.toString().padStart(2, '0');
+          const mm = converted.minute < 30 ? "00" : "30";
+          defaultTime = `${hh}:${mm}`;
+        }
+        timeSelect.value = defaultTime;
+
+        timeSelect.addEventListener("change", () => {
+          renderZones(zone, timeSelect.value);
+        });
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-btn";
+        removeBtn.textContent = "Remove";
+        removeBtn.addEventListener("click", () => {
+          selectedZones.splice(index, 1);
+          renderZones();
+        });
+
+        container.appendChild(label);
+        container.appendChild(timeSelect);
+        container.appendChild(removeBtn);
+        timezonesContainer.appendChild(container);
+      });
+    }
+
+    addBtn.addEventListener("click", () => {
+      const zone = timezoneInput.value;
+      const zoneId = zone.split(' (')[0];
+      
+      if (timeZonesWithCities[zoneId] && !selectedZones.includes(zone)) {
+        selectedZones.push(zone);
+        renderZones();
+        timezoneInput.value = '';
+      } else if (!timeZonesWithCities[zoneId]) {
+        alert("Please select a valid time zone from the list");
+      } else if (selectedZones.includes(zone)) {
+        alert("This time zone is already added");
+      }
+    });
+  </script>
+</body>
+</html>
