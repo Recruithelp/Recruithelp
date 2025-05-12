@@ -1,110 +1,384 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Time Zone Converter</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Zone Converter - Recruit Help</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    :root {
+      --primary-blue: #2563eb;
+      --dark-blue: #1e40af;
+      --light-blue: #93c5fd;
+      --background: #f8fafc;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --mobile-breakpoint: 768px;
+    }
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 30px;
-      background: #ffffff;
+      padding: 0;
     }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      background-color: var(--background);
+      line-height: 1.6;
     }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #0b4c8c;
+    
+    /* Layout Grid */
+    .app-container {
+      display: grid;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
     }
-
-    .controls {
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .app-container {
+        grid-template-areas:
+          "header"
+          "main";
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Header Styles */
+    header {
+      grid-area: header;
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 25px;
-      justify-content: center;
+      flex-direction: column;
+      gap: 15px;
+      padding: 15px 20px;
     }
-
-    .controls input,
-    .controls select,
-    .controls button {
-      padding: 10px 12px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    .controls button {
-      background-color: #0b4c8c;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    .timezone-entry {
+    
+    .logo-nav-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #e6f4ff;
-      padding: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-blue);
+    }
+    
+    /* Banner Ad */
+    .banner-ad {
+      background-color: #e0e7ff;
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-light);
+      border-radius: 6px;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      background-color: var(--white);
+      border-right: 1px solid var(--border-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .sidebar {
+        display: none;
+      }
+    }
+    
+    .square-ad {
+      background-color: #e0e7ff;
+      width: 210px;
+      height: 210px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 8px;
-      margin-bottom: 12px;
-      border: 1px solid #cce7ff;
+      color: var(--text-light);
+      font-size: 0.9rem;
     }
-
-    .timezone-entry label {
-      font-weight: bold;
-      font-size: 17px;
-      color: #084d73;
-      flex-grow: 1;
+    
+    /* Main Content */
+    main {
+      grid-area: main;
+      padding: 30px;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
     }
-
-    .timezone-entry select {
-      font-weight: bold;
-      font-size: 17px;
-      padding: 8px 10px;
-      border-radius: 5px;
-      border: 1px solid #aaa;
-      background-color: #fff;
-      color: #222;
-      margin: 0 10px;
+    
+    .converter-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 30px;
     }
-
-    .remove-btn {
-      background-color: #ff4444;
+    
+    h1 {
+      color: var(--primary-blue);
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      text-align: center;
+      font-weight: 700;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    button {
+      background-color: var(--primary-blue);
       color: white;
       border: none;
-      border-radius: 5px;
-      padding: 8px 12px;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 14px;
+      transition: background-color 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    button:hover {
+      background-color: var(--dark-blue);
+    }
+    
+    .btn-secondary {
+      background-color: #64748b;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #475569;
+    }
+    
+    /* Timezone Entry */
+    .timezone-entry {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: #f0f9ff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .timezone-label {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--primary-blue);
+      flex: 1 1 100%;
+      margin-bottom: 10px;
+    }
+    
+    .timezone-controls {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+    
+    .timezone-time {
+      flex: 1;
+    }
+    
+    .remove-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 15px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    
+    .remove-btn:hover {
+      background-color: #bb2d3b;
+    }
+    
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .controls input {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-dark);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .mobile-nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+        padding-top: 15px;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      main {
+        padding: 20px;
+      }
+      
+      .converter-container {
+        padding: 20px;
+      }
+      
+      .timezone-entry {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .timezone-controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .timezone-time, .remove-btn {
+        width: 100%;
+      }
     }
 
-    .remove-btn:hover {
-      background-color: #cc0000;
+    /* Animation for timezone entries */
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Time Zone Converter</h1>
-    <div class="controls">
-      <input type="text" id="timezone-input" placeholder="Enter or select Time Zone" list="timezone-list" />
-      <datalist id="timezone-list"></datalist>
-      <button id="add-btn">Add Time Zone</button>
-    </div>
-    <div id="timezones-container"></div>
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <div class="logo-nav-container">
+          <a href="#" class="logo">Recruit Help</a>
+          <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="fas fa-bars"></i></button>
+          <nav class="nav-links" id="navLinks">
+            <a href="#">Home</a>
+            <a href="#">Tools</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+        <div class="banner-ad">
+          Advertisement Space - 728x90
+        </div>
+      </div>
+    </header>
+    
+    <aside class="sidebar">
+      <div class="square-ad">Square Ad (250x250)</div>
+      <div class="square-ad">Square Ad (250x250)</div>
+    </aside>
+    
+    <main>
+      <div class="converter-container">
+        <h1><i class="fas fa-globe" style="margin-right: 10px;"></i>Time Zone Converter</h1>
+        
+        <div class="controls">
+          <input type="text" id="timezone-input" placeholder="Enter or select Time Zone" list="timezone-list" />
+          <datalist id="timezone-list"></datalist>
+          <button id="add-btn"><i class="fas fa-plus" style="margin-right: 8px;"></i>Add Time Zone</button>
+        </div>
+        
+        <div id="timezones-container"></div>
+      </div>
+    </main>
   </div>
 
   <script>
@@ -262,12 +536,17 @@
       timezonesContainer.innerHTML = "";
       selectedZones.forEach((zone, index) => {
         const container = document.createElement("div");
-        container.className = "timezone-entry";
+        container.className = "timezone-entry fade-in";
 
-        const label = document.createElement("label");
+        const label = document.createElement("div");
+        label.className = "timezone-label";
         label.textContent = zone;
 
+        const controls = document.createElement("div");
+        controls.className = "timezone-controls";
+
         const timeSelect = document.createElement("select");
+        timeSelect.className = "timezone-time";
         timeOptions.forEach(opt => {
           const option = document.createElement("option");
           option.value = opt.value;
@@ -301,15 +580,17 @@
 
         const removeBtn = document.createElement("button");
         removeBtn.className = "remove-btn";
-        removeBtn.textContent = "Remove";
+        removeBtn.innerHTML = '<i class="fas fa-trash" style="margin-right: 5px;"></i> Remove';
         removeBtn.addEventListener("click", () => {
           selectedZones.splice(index, 1);
           renderZones();
         });
 
+        controls.appendChild(timeSelect);
+        controls.appendChild(removeBtn);
+        
         container.appendChild(label);
-        container.appendChild(timeSelect);
-        container.appendChild(removeBtn);
+        container.appendChild(controls);
         timezonesContainer.appendChild(container);
       });
     }
@@ -328,6 +609,21 @@
         alert("This time zone is already added");
       }
     });
+
+    // Mobile navigation toggle
+    document.getElementById('mobileNavToggle').addEventListener('click', function() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('active');
+    });
+
+    // Initialize with current timezone
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const userZoneKey = Object.keys(timeZonesWithCities).find(key => key === userTimeZone);
+    if (userZoneKey) {
+      const userZone = `${userZoneKey} (${timeZonesWithCities[userZoneKey]})`;
+      selectedZones.push(userZone);
+      renderZones();
+    }
   </script>
 </body>
 </html>
