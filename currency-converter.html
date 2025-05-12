@@ -1,153 +1,362 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Currency Converter</title>
+  <title>Currency Converter - Recruit Help</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary-blue: #2563eb;
+      --dark-blue: #1e40af;
+      --light-blue: #93c5fd;
+      --background: #f8fafc;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --mobile-breakpoint: 768px;
+    }
+    
     * {
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background-color: #f5f7fa;
       margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      background-color: var(--background);
+      line-height: 1.6;
+    }
+    
+    /* Layout Grid */
+    .app-container {
+      display: grid;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      grid-template-columns: 250px 1fr;
       min-height: 100vh;
     }
-    .container {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      width: 100%;
-      max-width: 500px;
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .app-container {
+        grid-template-areas:
+          "header"
+          "main";
+        grid-template-columns: 1fr;
+      }
     }
-    h1 {
+    
+    /* Header Styles */
+    header {
+      grid-area: header;
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 15px 20px;
+    }
+    
+    .logo-nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-blue);
+    }
+    
+    /* Banner Ad */
+    .banner-ad {
+      background-color: #e0e7ff;
+      padding: 10px;
       text-align: center;
-      color: #2c3e50;
-      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-light);
+      border-radius: 6px;
     }
-    .converter-box {
+    
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      background-color: var(--white);
+      border-right: 1px solid var(--border-color);
+      padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
-    .input-group {
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .sidebar {
+        display: none;
+      }
+    }
+    
+    .square-ad {
+      background-color: #e0e7ff;
+      width: 210px;
+      height: 210px;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      color: var(--text-light);
+      font-size: 0.9rem;
     }
+    
+    /* Main Content */
+    main {
+      grid-area: main;
+      padding: 30px;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .converter-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      color: var(--primary-blue);
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
     label {
-      font-weight: 600;
-      color: #34495e;
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-dark);
     }
+    
     input, select {
+      width: 100%;
       padding: 12px 15px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-color);
       border-radius: 6px;
-      font-size: 16px;
-      transition: border-color 0.3s;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
+    
     input:focus, select:focus {
       outline: none;
-      border-color: #3498db;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
+    
     button {
-      background-color: #3498db;
+      background-color: var(--primary-blue);
       color: white;
       border: none;
-      padding: 12px;
+      padding: 12px 24px;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.3s;
-      margin-top: 10px;
+      font-family: 'Inter', sans-serif;
     }
+    
     button:hover {
-      background-color: #2980b9;
+      background-color: var(--dark-blue);
     }
+    
     .result {
       margin-top: 20px;
-      padding: 15px;
-      background-color: #f8f9fa;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 600;
+      padding: 20px;
+      background-color: #f0f9ff;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-blue);
     }
+    
     .swap-btn {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 24px;
-      color: #7f8c8d;
+      font-size: 20px;
+      color: var(--text-light);
       align-self: center;
-      padding: 0 10px;
+      padding: 0 5px;
       margin: 0 5px;
+      width: 40px;
     }
-    .swap-btn:hover {
-      color: #3498db;
-    }
+    
     .error {
-      color: #e74c3c;
+      color: #dc3545;
       text-align: center;
       margin-top: 15px;
     }
+    
     .last-updated {
       text-align: center;
-      font-size: 12px;
-      color: #95a5a6;
+      font-size: 0.9rem;
+      color: var(--text-light);
       margin-top: 20px;
     }
+    
     .currency-row {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
+    
     .currency-select {
       flex: 1;
       min-width: 150px;
     }
-    select {
-      width: 100%;
+    
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-dark);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    @media (max-width: var(--mobile-breakpoint)) {
+      .mobile-nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+        padding-top: 15px;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      main {
+        padding: 20px;
+      }
+      
+      .converter-container {
+        padding: 20px;
+      }
+      
+      .currency-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .swap-btn {
+        transform: rotate(90deg);
+        margin: 10px 0;
+        align-self: center;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Currency Converter</h1>
-    <div class="converter-box">
-      <div class="input-group">
-        <label for="amount">Amount</label>
-        <input type="number" id="amount" placeholder="Enter amount" min="0" step="0.01" value="1">
-      </div>
-      
-      <div class="currency-row">
-        <div class="input-group currency-select">
-          <label for="from-currency">From</label>
-          <select id="from-currency"></select>
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <div class="logo-nav-container">
+          <a href="#" class="logo">Recruit Help</a>
+          <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="fas fa-bars"></i></button>
+          <nav class="nav-links" id="navLinks">
+            <a href="#">Home</a>
+            <a href="#">Tools</a>
+            <a href="#">Contact</a>
+          </nav>
         </div>
-        
-        <button class="swap-btn" id="swap-btn" title="Swap currencies">⇄</button>
-        
-        <div class="input-group currency-select">
-          <label for="to-currency">To</label>
-          <select id="to-currency"></select>
+        <div class="banner-ad">
+          Advertisement Space - 728x90
         </div>
       </div>
-      
-      <button id="convert-btn">Convert</button>
-      
-      <div class="result" id="result">1 MYR = 17.85 INR</div>
-      <div class="error" id="error"></div>
-      <div class="last-updated" id="last-updated"></div>
-    </div>
+    </header>
+    
+    <aside class="sidebar">
+      <div class="square-ad">Square Ad (250x250)</div>
+      <div class="square-ad">Square Ad (250x250)</div>
+    </aside>
+    
+    <main>
+      <div class="converter-container">
+        <h1><i class="fas fa-exchange-alt" style="margin-right: 10px;"></i>Currency Converter</h1>
+        
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" placeholder="Enter amount" min="0" step="0.01" value="1">
+        </div>
+        
+        <div class="currency-row">
+          <div class="form-group currency-select">
+            <label for="from-currency">From</label>
+            <select id="from-currency"></select>
+          </div>
+          
+          <button class="swap-btn" id="swap-btn" title="Swap currencies">⇄</button>
+          
+          <div class="form-group currency-select">
+            <label for="to-currency">To</label>
+            <select id="to-currency"></select>
+          </div>
+        </div>
+        
+        <button id="convert-btn"><i class="fas fa-calculator" style="margin-right: 8px;"></i>Convert</button>
+        
+        <div class="result" id="result">1 MYR = 17.85 INR</div>
+        <div class="error" id="error"></div>
+        <div class="last-updated" id="last-updated"></div>
+      </div>
+    </main>
   </div>
 
   <script>
@@ -160,6 +369,12 @@
     const resultDiv = document.getElementById('result');
     const errorDiv = document.getElementById('error');
     const lastUpdatedDiv = document.getElementById('last-updated');
+
+    // Mobile navigation toggle
+    document.getElementById('mobileNavToggle').addEventListener('click', function() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('active');
+    });
 
     // Free API from ExchangeRate-API
     const API_KEY = 'c9d634747206ece807c17bbe'; // Replace with your API key
@@ -461,7 +676,7 @@
     function updateResult(amount = 1, fromCurrency = 'MYR', convertedAmount = 17.85, toCurrency = 'INR') {
       resultDiv.innerHTML = `
         <strong>${amount.toFixed(2)} ${fromCurrency}</strong> = 
-        <strong style="color: #3498db">${convertedAmount.toFixed(2)} ${toCurrency}</strong>
+        <strong style="color: var(--primary-blue)">${convertedAmount.toFixed(2)} ${toCurrency}</strong>
         <br><br>
         1 ${fromCurrency} = ${(convertedAmount / amount).toFixed(6)} ${toCurrency}
         <br>
