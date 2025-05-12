@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruiter Toolkit Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label, select, input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    input, select, button {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      word-wrap: break-word;
+    }
+    select {
+      background-color: white;
+    }
+    .keyword-section {
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+    }
+    .keyword-section h3 {
+      margin-top: 0;
+      color: #495057;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Recruiter Toolkit Dashboard</h1>
+
+    <label for="site">Select Platform:</label>
+    <select id="site" onchange="toggleCountryField()">
+      <option value="linkedin">LinkedIn</option>
+      <option value="github">GitHub</option>
+      <option value="stackoverflow">Stack Overflow</option>
+      <option value="google">Google Search</option>
+    </select>
+
+    <div id="countryContainer">
+      <label for="country">Select Country:</label>
+      <select id="country">
+        <option value="India">India</option>
+        <option value="Malaysia">Malaysia</option>
+        <option value="Singapore">Singapore</option>
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="United States">United States</option>
+        <option value="Australia">Australia</option>
+        <option disabled>───────────────────</option>
+        <option value="Argentina">Argentina</option>
+        <option value="Brazil">Brazil</option>
+        <option value="Canada">Canada</option>
+        <option value="China">China</option>
+        <option value="Egypt">Egypt</option>
+        <option value="France">France</option>
+        <option value="Germany">Germany</option>
+        <option value="Indonesia">Indonesia</option>
+        <option value="Japan">Japan</option>
+        <option value="Kenya">Kenya</option>
+        <option value="Mexico">Mexico</option>
+        <option value="Nigeria">Nigeria</option>
+        <option value="Russia">Russia</option>
+        <option value="South Africa">South Africa</option>
+        <option value="Spain">Spain</option>
+        <option value="UAE">UAE</option>
+      </select>
+    </div>
+
+    <div class="keyword-section">
+      <h3>Keyword Search Options</h3>
+      
+      <label for="allKeywords">All of these words (AND search):</label>
+      <input type="text" id="allKeywords" placeholder="Enter required keywords separated by spaces">
+      
+      <label for="anyKeywords">Any of these words (OR search):</label>
+      <input type="text" id="anyKeywords" placeholder="Enter optional keywords separated by spaces">
+      
+      <label for="excludeKeywords">None of these words (NOT search):</label>
+      <input type="text" id="excludeKeywords" placeholder="Enter excluded keywords separated by spaces">
+    </div>
+
+    <button onclick="generateSearch()">Generate Search URL</button>
+
+    <div id="searchOutput" class="output"></div>
+  </div>
+
+  <script>
+    function toggleCountryField() {
+      const site = document.getElementById("site").value;
+      const countryContainer = document.getElementById("countryContainer");
+
+      if (site === "github" || site === "stackoverflow" || site === "google") {
+        countryContainer.style.display = "none";
+      } else {
+        countryContainer.style.display = "block";
+      }
+    }
+
+    function generateSearch() {
+      const platform = document.getElementById("site").value;
+      const country = document.getElementById("country").value;
+      
+      // Get keyword inputs
+      const allKeywords = document.getElementById("allKeywords").value.trim();
+      const anyKeywords = document.getElementById("anyKeywords").value.trim();
+      const excludeKeywords = document.getElementById("excludeKeywords").value.trim();
+      
+      // Process keywords into boolean query
+      let keywordQuery = "";
+      
+      // Process ALL keywords (AND)
+      if (allKeywords) {
+        keywordQuery = allKeywords.split(/\s+/).map(k => `"${k}"`).join(" AND ");
+      }
+      
+      // Process ANY keywords (OR)
+      if (anyKeywords) {
+        const orPart = anyKeywords.split(/\s+/).map(k => `"${k}"`).join(" OR ");
+        if (keywordQuery) {
+          keywordQuery += ` AND (${orPart})`;
+        } else {
+          keywordQuery = orPart;
+        }
+      }
+      
+      // Process EXCLUDE keywords (NOT)
+      if (excludeKeywords) {
+        const notPart = excludeKeywords.split(/\s+/).map(k => `-"${k}"`).join(" ");
+        if (keywordQuery) {
+          keywordQuery += ` ${notPart}`;
+        } else {
+          keywordQuery = notPart;
+        }
+      }
+
+      const tldMap = {
+        "India": "in",
+        "Malaysia": "my",
+        "Singapore": "sg",
+        "United Kingdom": "uk",
+        "United States": "us",
+        "Australia": "au",
+        "Argentina": "ar",
+        "Brazil": "br",
+        "Canada": "ca",
+        "China": "cn",
+        "Egypt": "eg",
+        "France": "fr",
+        "Germany": "de",
+        "Indonesia": "id",
+        "Japan": "jp",
+        "Kenya": "ke",
+        "Mexico": "mx",
+        "Nigeria": "ng",
+        "Russia": "ru",
+        "South Africa": "za",
+        "Spain": "es",
+        "UAE": "ae"
+      };
+
+      const tld = tldMap[country] || "com";
+      let siteQuery = "";
+
+      if (platform === "linkedin") {
+        siteQuery = `-intitle:"profiles" -inurl:"dir/" site:${tld}.linkedin.com/in/ OR site:${tld}.linkedin.com/pub/`;
+      } else if (platform === "github") {
+        siteQuery = `site:github.com`;
+      } else if (platform === "stackoverflow") {
+        siteQuery = `site:stackoverflow.com/users`;
+      } else if (platform === "google") {
+        siteQuery = ""; // No site restriction for general Google search
+      }
+
+      const finalQuery = keywordQuery ? 
+        (siteQuery ? `${keywordQuery} ${siteQuery}` : keywordQuery) :
+        siteQuery;
+      
+      const searchURL = `https://www.google.com/search?q=${encodeURIComponent(finalQuery)}`;
+
+      document.getElementById("searchOutput").innerHTML = 
+        `<strong>Search URL:</strong><br><a href="${searchURL}" target="_blank">${searchURL}</a><br><br>
+         <strong>Boolean Query:</strong><br>${finalQuery}`;
+    }
+
+    // Initialize correct view on page load
+    window.onload = toggleCountryField;
+  </script>
+</body>
+</html>
