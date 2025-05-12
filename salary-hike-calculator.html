@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salary Hike Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #555;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+    .result-note {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      border-left: 4px solid #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Salary Hike Calculator</h1>
+    
+    <div class="form-group">
+      <label for="current">Current Annual Salary (₹):</label>
+      <input type="text" id="current" placeholder="Enter current salary" data-type="currency">
+    </div>
+
+    <div class="form-group">
+      <label for="expected">Expected Annual Salary (₹):</label>
+      <input type="text" id="expected" placeholder="Enter expected salary" data-type="currency">
+    </div>
+
+    <div class="form-group">
+      <label for="hike">Hike Percentage (%):</label>
+      <input type="text" id="hike" placeholder="Enter hike percentage">
+    </div>
+
+    <div class="result-note">
+      <p>💡 Change any field to automatically calculate the others</p>
+      <p>📈 Calculations update in real-time as you type</p>
+    </div>
+  </div>
+
+  <script>
+    let isUpdating = false;
+
+    // Number formatting functions
+    function formatNumber(num) {
+      return num.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    }
+
+    function parseFormattedNumber(str) {
+      return parseFloat(str.replace(/,/g, '')) || 0;
+    }
+
+    // Input formatting handler
+    function handleNumberInput(e) {
+      const input = e.target;
+      let value = input.value.replace(/[^0-9.]/g, '');
+      
+      // Handle multiple decimal points
+      const decimalSplit = value.split('.');
+      if(decimalSplit.length > 2) {
+        value = decimalSplit[0] + '.' + decimalSplit.slice(1).join('');
+      }
+
+      // Format currency fields
+      if(input.dataset.type === 'currency') {
+        const numberValue = parseFloat(value);
+        if(!isNaN(numberValue)) {
+          input.value = formatNumber(numberValue);
+        } else {
+          input.value = '';
+        }
+      }
+      else {
+        input.value = value;
+      }
+
+      // Trigger calculations
+      if(input.id === 'current') calculateValues('current');
+      if(input.id === 'expected') calculateValues('expected');
+      if(input.id === 'hike') calculateValues('hike');
+    }
+
+    // Calculation logic
+    function calculateValues(source) {
+      if (isUpdating) return;
+      isUpdating = true;
+
+      const current = parseFormattedNumber(document.getElementById('current').value);
+      const expected = parseFormattedNumber(document.getElementById('expected').value);
+      const hike = parseFormattedNumber(document.getElementById('hike').value);
+
+      try {
+        switch(source) {
+          case 'current':
+            if (current > 0) {
+              if (expected > 0) {
+                const newHike = ((expected - current) / current) * 100;
+                document.getElementById('hike').value = formatNumber(newHike);
+              } else if (hike > 0) {
+                const newExpected = current * (1 + hike / 100);
+                document.getElementById('expected').value = formatNumber(newExpected);
+              }
+            }
+            break;
+
+          case 'expected':
+            if (expected > 0) {
+              if (current > 0) {
+                const newHike = ((expected - current) / current) * 100;
+                document.getElementById('hike').value = formatNumber(newHike);
+              } else if (hike > 0) {
+                const newCurrent = expected / (1 + hike / 100);
+                document.getElementById('current').value = formatNumber(newCurrent);
+              }
+            }
+            break;
+
+          case 'hike':
+            if (hike > 0) {
+              if (current > 0) {
+                const newExpected = current * (1 + hike / 100);
+                document.getElementById('expected').value = formatNumber(newExpected);
+              } else if (expected > 0) {
+                const newCurrent = expected / (1 + hike / 100);
+                document.getElementById('current').value = formatNumber(newCurrent);
+              }
+            }
+            break;
+        }
+      } finally {
+        isUpdating = false;
+      }
+    }
+
+    // Event listeners
+    document.getElementById('current').addEventListener('input', handleNumberInput);
+    document.getElementById('expected').addEventListener('input', handleNumberInput);
+    document.getElementById('hike').addEventListener('input', handleNumberInput);
+  </script>
+</body>
+</html>
