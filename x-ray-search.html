@@ -291,7 +291,7 @@
       <div class="header-content">
         <div class="logo-nav-container">
           <a href="#" class="logo">Recruit Help</a>
-          <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="fas fa-bars"></i></button>
+          <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
           <nav class="nav-links" id="navLinks">
             <a href="#">Home</a>
             <a href="#">Tools</a>
@@ -357,17 +357,17 @@
           
           <div class="form-group">
             <label for="allKeywords">All of these words (AND search):</label>
-            <input type="text" id="allKeywords" placeholder="Enter required keywords separated by spaces">
+            <input type="text" id="allKeywords" placeholder="Keywords/phrases, separated by commas (e.g., java, react)">
           </div>
           
           <div class="form-group">
             <label for="anyKeywords">Any of these words (OR search):</label>
-            <input type="text" id="anyKeywords" placeholder="Enter optional keywords separated by spaces">
+            <input type="text" id="anyKeywords" placeholder="Keywords/phrases, separated by commas (e.g., java, react)">
           </div>
           
           <div class="form-group">
             <label for="excludeKeywords">None of these words (NOT search):</label>
-            <input type="text" id="excludeKeywords" placeholder="Enter excluded keywords separated by spaces">
+            <input type="text" id="excludeKeywords" placeholder="Keywords/phrases, separated by commas (e.g., fresher, intern)">
           </div>
         </div>
         
@@ -396,66 +396,84 @@
       }
     }
 
+    // Helper function to check if a string is already quoted
+    function isQuoted(str) {
+      return str.startsWith('"') && str.endsWith('"');
+    }
+
+    // Helper function to process keywords based on a delimiter
+    function processKeywords(input, delimiter) { 
+      if (!input.trim()) return [];
+      
+      return input.split(delimiter)
+                  .map(part => part.trim()) // Trim whitespace from each part
+                  .filter(part => part);    // Remove any empty strings
+    }
+
+    // Helper function to format a keyword for search (ensures quoting)
+    function formatKeyword(keyword) {
+      // If it's already quoted, return as-is
+      if (isQuoted(keyword)) {
+        return keyword;
+      }
+      // If it's multiple words or a single word, wrap in quotes for consistency
+      return `"${keyword}"`;
+    }
+
     function generateSearch() {
       const platform = document.getElementById("site").value;
       const country = document.getElementById("country").value;
       
       // Get keyword inputs
-      const allKeywords = document.getElementById("allKeywords").value.trim();
-      const anyKeywords = document.getElementById("anyKeywords").value.trim();
-      const excludeKeywords = document.getElementById("excludeKeywords").value.trim();
+      const allKeywordsInput = document.getElementById("allKeywords").value.trim();
+      const anyKeywordsInput = document.getElementById("anyKeywords").value.trim();
+      const excludeKeywordsInput = document.getElementById("excludeKeywords").value.trim();
       
-      // Process keywords into boolean query
       let keywordQuery = "";
       
-      // Process ALL keywords (AND)
-      if (allKeywords) {
-        keywordQuery = allKeywords.split(/\s+/).map(k => `"${k}"`).join(" AND ");
-      }
-      
-      // Process ANY keywords (OR)
-      if (anyKeywords) {
-        const orPart = anyKeywords.split(/\s+/).map(k => `"${k}"`).join(" OR ");
-        if (keywordQuery) {
-          keywordQuery += ` AND (${orPart})`;
-        } else {
-          keywordQuery = orPart;
+      // Process ALL keywords (AND) - uses comma as delimiter
+      if (allKeywordsInput) {
+        const keywords = processKeywords(allKeywordsInput, ',');
+        if (keywords.length > 0) {
+          keywordQuery = keywords.map(formatKeyword).join(" AND ");
         }
       }
       
-      // Process EXCLUDE keywords (NOT)
-      if (excludeKeywords) {
-        const notPart = excludeKeywords.split(/\s+/).map(k => `-"${k}"`).join(" ");
-        if (keywordQuery) {
-          keywordQuery += ` ${notPart}`;
-        } else {
-          keywordQuery = notPart;
+      // Process ANY keywords (OR) - uses comma as delimiter
+      if (anyKeywordsInput) {
+        const keywords = processKeywords(anyKeywordsInput, ',');
+        if (keywords.length > 0) {
+          const orPart = keywords.map(formatKeyword).join(" OR ");
+          if (keywordQuery) {
+            // If there's an existing AND query, wrap OR part in parentheses
+            keywordQuery += ` AND (${orPart})`;
+          } else {
+            keywordQuery = orPart;
+          }
+        }
+      }
+      
+      // Process EXCLUDE keywords (NOT) - uses comma as delimiter
+      if (excludeKeywordsInput) {
+        const keywords = processKeywords(excludeKeywordsInput, ','); // CHANGED: Use comma delimiter
+        if (keywords.length > 0) {
+          // Each excluded term is formatted and prepended with '-'
+          // Then joined by a space, as Google NOT operators are space-separated
+          const notPart = keywords.map(k => `-${formatKeyword(k)}`).join(" "); 
+          if (keywordQuery) {
+            keywordQuery += ` ${notPart}`;
+          } else {
+            keywordQuery = notPart;
+          }
         }
       }
 
       const tldMap = {
-        "India": "in",
-        "Malaysia": "my",
-        "Singapore": "sg",
-        "United Kingdom": "uk",
-        "United States": "us",
-        "Australia": "au",
-        "Argentina": "ar",
-        "Brazil": "br",
-        "Canada": "ca",
-        "China": "cn",
-        "Egypt": "eg",
-        "France": "fr",
-        "Germany": "de",
-        "Indonesia": "id",
-        "Japan": "jp",
-        "Kenya": "ke",
-        "Mexico": "mx",
-        "Nigeria": "ng",
-        "Russia": "ru",
-        "South Africa": "za",
-        "Spain": "es",
-        "UAE": "ae"
+        "India": "in", "Malaysia": "my", "Singapore": "sg", "United Kingdom": "uk",
+        "United States": "us", "Australia": "au", "Argentina": "ar", "Brazil": "br",
+        "Canada": "ca", "China": "cn", "Egypt": "eg", "France": "fr", "Germany": "de",
+        "Indonesia": "id", "Japan": "jp", "Kenya": "ke", "Mexico": "mx", "Nigeria": "ng",
+        "Russia": "ru", "South Africa": "za", "Spain": "es", "UAE": "ae"
       };
 
       const tld = tldMap[country] || "com";
@@ -471,27 +489,42 @@
         siteQuery = ""; // No site restriction for general Google search
       }
 
-      const finalQuery = keywordQuery ? 
-        (siteQuery ? `${keywordQuery} ${siteQuery}` : keywordQuery) :
-        siteQuery;
+      let finalQuery = "";
+      if (keywordQuery && siteQuery) {
+        finalQuery = `${keywordQuery} ${siteQuery}`;
+      } else if (keywordQuery) {
+        finalQuery = keywordQuery;
+      } else if (siteQuery) {
+        finalQuery = siteQuery;
+      }
       
       const searchURL = `https://www.google.com/search?q=${encodeURIComponent(finalQuery)}`;
 
       const outputDiv = document.getElementById("searchOutput");
-      outputDiv.innerHTML = 
-        `<strong><i class="fas fa-link"></i> Search URL:</strong><br><a href="${searchURL}" target="_blank">${searchURL}</a><br><br>
-         <strong><i class="fas fa-code"></i> Boolean Query:</strong><br>${finalQuery}`;
-      outputDiv.style.display = "block";
-      outputDiv.classList.add('fade-in');
-      
-      // Smooth scroll to results
-      outputDiv.scrollIntoView({ behavior: 'smooth' });
+      if (finalQuery) { // Only show output if there's something to search
+        outputDiv.innerHTML = 
+          `<strong><i class="fas fa-link"></i> Search URL:</strong><br><a href="${searchURL}" target="_blank" rel="noopener noreferrer">${searchURL}</a><br><br>
+           <strong><i class="fas fa-code"></i> Boolean Query:</strong><br>${finalQuery}`;
+        outputDiv.style.display = "block";
+        outputDiv.classList.add('fade-in');
+        // Remove animation class after it finishes to allow re-triggering
+        setTimeout(() => outputDiv.classList.remove('fade-in'), 500);
+        
+        outputDiv.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        outputDiv.innerHTML = 'Please enter keywords or select a platform for site-specific search.';
+        outputDiv.style.display = "block";
+      }
     }
 
     // Initialize correct view on page load
     window.onload = function() {
       toggleCountryField();
       document.getElementById('navLinks').classList.remove('active');
+      const mobileToggle = document.getElementById('mobileNavToggle');
+      if (mobileToggle && !mobileToggle.hasAttribute('aria-label')) {
+          mobileToggle.setAttribute('aria-label', 'Toggle navigation');
+      }
     };
   </script>
 </body>
