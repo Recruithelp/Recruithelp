@@ -19,20 +19,20 @@
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --mobile-breakpoint: 768px;
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     body {
       font-family: 'Inter', sans-serif;
       color: var(--text-dark);
       background-color: var(--background);
       line-height: 1.6;
     }
-    
+
     /* Layout Grid */
     .app-container {
       display: grid;
@@ -42,7 +42,7 @@
       grid-template-columns: 250px 1fr;
       min-height: 100vh;
     }
-    
+
     @media (max-width: var(--mobile-breakpoint)) {
       .app-container {
         grid-template-areas:
@@ -51,7 +51,7 @@
         grid-template-columns: 1fr;
       }
     }
-    
+
     /* Header Styles */
     header {
       grid-area: header;
@@ -61,7 +61,7 @@
       top: 0;
       z-index: 100;
     }
-    
+
     .header-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -70,37 +70,37 @@
       gap: 15px;
       padding: 15px 20px;
     }
-    
+
     .logo-nav-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
     }
-    
+
     .logo {
       font-size: 1.5rem;
       font-weight: 600;
       color: var(--primary-blue);
       text-decoration: none;
     }
-    
+
     .nav-links {
       display: flex;
       gap: 30px;
     }
-    
+
     .nav-links a {
       color: var(--text-dark);
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s;
     }
-    
+
     .nav-links a:hover {
       color: var(--primary-blue);
     }
-    
+
     /* Banner Ad */
     .banner-ad {
       background-color: #e0e7ff;
@@ -111,7 +111,7 @@
       color: var(--text-light);
       border-radius: 6px;
     }
-    
+
     /* Sidebar */
     .sidebar {
       grid-area: sidebar;
@@ -122,13 +122,13 @@
       flex-direction: column;
       gap: 20px;
     }
-    
+
     @media (max-width: var(--mobile-breakpoint)) {
       .sidebar {
         display: none;
       }
     }
-    
+
     .square-ad {
       background-color: #e0e7ff;
       width: 210px; /* Accounting for padding */
@@ -140,7 +140,7 @@
       color: var(--text-light);
       font-size: 0.9rem;
     }
-    
+
     /* Main Content */
     main {
       grid-area: main;
@@ -149,7 +149,7 @@
       max-width: 900px; /* Adjusted to accommodate sidebar */
       margin: 0 auto;
     }
-    
+
     .dashboard-card {
       background-color: var(--white);
       border-radius: 8px;
@@ -157,26 +157,26 @@
       padding: 30px;
       margin-bottom: 30px;
     }
-    
+
     h1 {
       color: var(--primary-blue);
       margin-bottom: 20px;
       font-size: 1.8rem;
       font-weight: 700;
     }
-    
+
     /* Form Styles */
     .form-group {
       margin-bottom: 20px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
       color: var(--text-dark);
     }
-    
+
     select, input {
       width: 100%;
       padding: 12px 15px;
@@ -186,13 +186,13 @@
       font-family: 'Inter', sans-serif;
       transition: border-color 0.3s, box-shadow 0.3s;
     }
-    
+
     select:focus, input:focus {
       outline: none;
       border-color: var(--primary-blue);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
-    
+
     button {
       background-color: var(--primary-blue);
       color: white;
@@ -206,11 +206,11 @@
       width: 100%;
       font-family: 'Inter', sans-serif;
     }
-    
+
     button:hover {
       background-color: var(--dark-blue);
     }
-    
+
     /* Keyword Section */
     .keyword-section {
       background-color: #f0f9ff;
@@ -219,13 +219,13 @@
       margin-bottom: 20px;
       border-left: 4px solid var(--primary-blue);
     }
-    
+
     .keyword-section h3 {
       color: var(--primary-blue);
       margin-bottom: 15px;
       font-weight: 600;
     }
-    
+
     /* Output Section */
     .output {
       background-color: #f8fafc;
@@ -234,18 +234,18 @@
       margin-top: 20px;
       border-left: 4px solid var(--primary-blue);
     }
-    
+
     .output a {
       color: var(--primary-blue);
       word-break: break-all;
       text-decoration: none;
       font-weight: 500;
     }
-    
+
     .output a:hover {
       text-decoration: underline;
     }
-    
+
     /* Mobile Navigation */
     .mobile-nav-toggle {
       display: none;
@@ -255,12 +255,12 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-    
+
     @media (max-width: var(--mobile-breakpoint)) {
       .mobile-nav-toggle {
         display: block;
       }
-      
+
       .nav-links {
         display: none;
         width: 100%;
@@ -268,12 +268,11 @@
         gap: 15px;
         padding-top: 15px;
       }
-      
+
       .nav-links.active {
         display: flex;
       }
     }
-
     /* Animation for output */
     .fade-in {
       animation: fadeIn 0.5s ease-in-out;
@@ -282,6 +281,49 @@
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Tab styles for boolean options */
+    .tab-container {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab-button {
+      background-color: var(--white);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text-light);
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      transition: all 0.3s ease;
+      margin-right: 5px; /* Space between tabs */
+    }
+
+    .tab-button:hover {
+      background-color: #f0f9ff;
+      color: var(--primary-blue);
+    }
+
+    .tab-button.active {
+      background-color: var(--primary-blue);
+      color: var(--white);
+      border-color: var(--primary-blue);
+      transform: translateY(1px); /* Slight lift */
+      box-shadow: var(--shadow);
+    }
+
+    .tab-content {
+      display: none;
+      padding-top: 10px; /* Space from tabs */
+    }
+
+    .tab-content.active {
+      display: block;
     }
   </style>
 </head>
@@ -303,16 +345,16 @@
         </div>
       </div>
     </header>
-    
+
     <aside class="sidebar">
       <div class="square-ad">Square Ad (250x250)</div>
       <div class="square-ad">Square Ad (250x250)</div>
     </aside>
-    
+
     <main>
       <div class="dashboard-card">
         <h1><i class="fas fa-search" style="margin-right: 10px;"></i>Recruiter Search Toolkit</h1>
-        
+
         <div class="form-group">
           <label for="site">Select Platform:</label>
           <select id="site" onchange="toggleCountryField()">
@@ -322,7 +364,7 @@
             <option value="google">Google Search</option>
           </select>
         </div>
-        
+
         <div class="form-group" id="countryContainer">
           <label for="country">Select Country:</label>
           <select id="country">
@@ -351,28 +393,38 @@
             <option value="UAE">UAE</option>
           </select>
         </div>
-        
-        <div class="keyword-section">
+
+        <div class="tab-container">
+          <button class="tab-button active" onclick="openTab(event, 'structuredSearch')">Structured Search</button>
+          <button class="tab-button" onclick="openTab(event, 'directBooleanSearch')">Direct Boolean Search</button>
+        </div>
+
+        <div id="structuredSearch" class="tab-content active keyword-section">
           <h3><i class="fas fa-key" style="margin-right: 8px;"></i>Keyword Search Options</h3>
-          
           <div class="form-group">
             <label for="allKeywords">All of these words (AND search):</label>
             <input type="text" id="allKeywords" placeholder="Keywords/phrases, separated by commas (e.g., java, react)">
           </div>
-          
           <div class="form-group">
             <label for="anyKeywords">Any of these words (OR search):</label>
             <input type="text" id="anyKeywords" placeholder="Keywords/phrases, separated by commas (e.g., java, react)">
           </div>
-          
           <div class="form-group">
             <label for="excludeKeywords">None of these words (NOT search):</label>
             <input type="text" id="excludeKeywords" placeholder="Keywords/phrases, separated by commas (e.g., fresher, intern)">
           </div>
         </div>
-        
+
+        <div id="directBooleanSearch" class="tab-content keyword-section">
+          <h3><i class="fas fa-code" style="margin-right: 8px;"></i>Direct Boolean Search</h3>
+          <div class="form-group">
+            <label for="directKeywords">Enter Boolean Keywords:</label>
+            <input type="text" id="directKeywords" placeholder='e.g. "java developer" AND "spring" NOT "junior"'>
+          </div>
+        </div>
+
         <button onclick="generateSearch()"><i class="fas fa-magic" style="margin-right: 8px;"></i>Generate Search URL</button>
-        
+
         <div id="searchOutput" class="output" style="display: none;"></div>
       </div>
     </main>
@@ -385,6 +437,7 @@
       navLinks.classList.toggle('active');
     });
 
+    // Function to toggle country field visibility based on platform
     function toggleCountryField() {
       const site = document.getElementById("site").value;
       const countryContainer = document.getElementById("countryContainer");
@@ -402,10 +455,9 @@
     }
 
     // Helper function to process keywords based on a delimiter
-    function processKeywords(input, delimiter) { 
-      if (!input.trim()) return [];
-      
-      return input.split(delimiter)
+    function processKeywords(input, delimiter) {
+       if (!input.trim()) return [];
+       return input.split(delimiter)
                   .map(part => part.trim()) // Trim whitespace from each part
                   .filter(part => part);    // Remove any empty strings
     }
@@ -420,52 +472,86 @@
       return `"${keyword}"`;
     }
 
+    // Function to handle tab switching
+    let currentActiveTab = 'structuredSearch'; // Keep track of the active tab
+
+    function openTab(evt, tabName) {
+      // Declare all variables
+      let i, tabcontent, tablinks;
+
+      // Get all elements with class="tab-content" and hide them
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+        tabcontent[i].classList.remove('active'); // Remove active class from content
+      }
+
+      // Get all elements with class="tab-button" and remove the class "active"
+      tablinks = document.getElementsByClassName("tab-button");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+      }
+
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(tabName).style.display = "block";
+      document.getElementById(tabName).classList.add('active'); // Add active class to content
+      evt.currentTarget.classList.add("active");
+
+      currentActiveTab = tabName; // Update the active tab
+    }
+
+    // Main function to generate the search URL
     function generateSearch() {
       const platform = document.getElementById("site").value;
       const country = document.getElementById("country").value;
-      
-      // Get keyword inputs
-      const allKeywordsInput = document.getElementById("allKeywords").value.trim();
-      const anyKeywordsInput = document.getElementById("anyKeywords").value.trim();
-      const excludeKeywordsInput = document.getElementById("excludeKeywords").value.trim();
-      
+
       let keywordQuery = "";
-      
-      // Process ALL keywords (AND) - uses comma as delimiter
-      if (allKeywordsInput) {
-        const keywords = processKeywords(allKeywordsInput, ',');
-        if (keywords.length > 0) {
-          keywordQuery = keywords.map(formatKeyword).join(" AND ");
-        }
-      }
-      
-      // Process ANY keywords (OR) - uses comma as delimiter
-      if (anyKeywordsInput) {
-        const keywords = processKeywords(anyKeywordsInput, ',');
-        if (keywords.length > 0) {
-          const orPart = keywords.map(formatKeyword).join(" OR ");
-          if (keywordQuery) {
-            // If there's an existing AND query, wrap OR part in parentheses
-            keywordQuery += ` AND (${orPart})`;
-          } else {
-            keywordQuery = orPart;
+
+      // Determine which search method is active
+      if (currentActiveTab === 'structuredSearch') {
+        const allKeywordsInput = document.getElementById("allKeywords").value.trim();
+        const anyKeywordsInput = document.getElementById("anyKeywords").value.trim();
+        const excludeKeywordsInput = document.getElementById("excludeKeywords").value.trim();
+
+        // Process ALL keywords (AND) - uses comma as delimiter
+        if (allKeywordsInput) {
+          const keywords = processKeywords(allKeywordsInput, ',');
+          if (keywords.length > 0) {
+            keywordQuery = keywords.map(formatKeyword).join(" AND ");
           }
         }
-      }
-      
-      // Process EXCLUDE keywords (NOT) - uses comma as delimiter
-      if (excludeKeywordsInput) {
-        const keywords = processKeywords(excludeKeywordsInput, ','); // CHANGED: Use comma delimiter
-        if (keywords.length > 0) {
-          // Each excluded term is formatted and prepended with '-'
-          // Then joined by a space, as Google NOT operators are space-separated
-          const notPart = keywords.map(k => `-${formatKeyword(k)}`).join(" "); 
-          if (keywordQuery) {
-            keywordQuery += ` ${notPart}`;
-          } else {
-            keywordQuery = notPart;
+
+        // Process ANY keywords (OR) - uses comma as delimiter
+        if (anyKeywordsInput) {
+          const keywords = processKeywords(anyKeywordsInput, ',');
+          if (keywords.length > 0) {
+            const orPart = keywords.map(formatKeyword).join(" OR ");
+            if (keywordQuery) {
+              // If there's an existing AND query, wrap OR part in parentheses
+              keywordQuery += ` AND (${orPart})`;
+            } else {
+              keywordQuery = orPart;
+            }
           }
         }
+
+        // Process EXCLUDE keywords (NOT) - uses comma as delimiter
+        if (excludeKeywordsInput) {
+          const keywords = processKeywords(excludeKeywordsInput, ',');
+          if (keywords.length > 0) {
+            // Each excluded term is formatted and prepended with '-'
+            // Then joined by a space, as Google NOT operators are space-separated
+            const notPart = keywords.map(k => `-${formatKeyword(k)}`).join(" ");
+            if (keywordQuery) {
+              keywordQuery += ` ${notPart}`;
+            } else {
+              keywordQuery = notPart;
+            }
+          }
+        }
+      } else if (currentActiveTab === 'directBooleanSearch') {
+        // Direct Boolean Search logic
+        keywordQuery = document.getElementById("directKeywords").value.trim();
       }
 
       const tldMap = {
@@ -497,19 +583,19 @@
       } else if (siteQuery) {
         finalQuery = siteQuery;
       }
-      
+
       const searchURL = `https://www.google.com/search?q=${encodeURIComponent(finalQuery)}`;
 
       const outputDiv = document.getElementById("searchOutput");
       if (finalQuery) { // Only show output if there's something to search
-        outputDiv.innerHTML = 
+        outputDiv.innerHTML =
           `<strong><i class="fas fa-link"></i> Search URL:</strong><br><a href="${searchURL}" target="_blank" rel="noopener noreferrer">${searchURL}</a><br><br>
            <strong><i class="fas fa-code"></i> Boolean Query:</strong><br>${finalQuery}`;
         outputDiv.style.display = "block";
         outputDiv.classList.add('fade-in');
         // Remove animation class after it finishes to allow re-triggering
         setTimeout(() => outputDiv.classList.remove('fade-in'), 500);
-        
+
         outputDiv.scrollIntoView({ behavior: 'smooth' });
       } else {
         outputDiv.innerHTML = 'Please enter keywords or select a platform for site-specific search.';
@@ -525,6 +611,8 @@
       if (mobileToggle && !mobileToggle.hasAttribute('aria-label')) {
           mobileToggle.setAttribute('aria-label', 'Toggle navigation');
       }
+      // Set the default active tab on load
+      document.querySelector('.tab-button').click(); // Simulates a click on the first tab
     };
   </script>
 </body>
